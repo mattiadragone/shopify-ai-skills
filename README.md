@@ -25,6 +25,7 @@ Each skill is a focused rule set for a specific area of a Shopify theme — sect
 | `shopify-locales` | `locales/` — translation keys, fallback chain |
 | `shopify-liquid` | Liquid syntax, tags, filters |
 | `shopify-css` | CSS standards, `{% stylesheet %}` scope pitfall |
+| `shopify-design` | Design principles, antifragile layouts, merchant UX, dark patterns |
 | `shopify-javascript` | JS, Custom Elements, `{% javascript %}` bundle |
 | `shopify-theme-store` | Theme Store submission requirements |
 | `shopify-accessibility` | WCAG 2.1 AA patterns |
