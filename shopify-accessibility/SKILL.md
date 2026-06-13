@@ -21,6 +21,22 @@ description: Use when building or auditing accessible UI — modals, drawers, dr
 | Large text (18pt+ or 14pt bold+) contrast | ≥ 3:1 |
 | UI component contrast (borders, focus indicators) | ≥ 3:1 |
 
+## Page-level HTML requirements
+
+- Set `lang` attribute on the `<html>` element for correct screen reader pronunciation:
+  ```liquid
+  <html lang="{{ request.locale.iso_code }}">
+  ```
+- Do not disable viewport zooming. Never use `maximum-scale=1` or `user-scalable=no`:
+  ```html
+  <!-- CORRECT -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- WRONG — blocks zoom for low-vision users -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  ```
+- Use only `tabindex="0"` or `tabindex="-1"`. Never use positive `tabindex` values — they break natural DOM focus order.
+- Do not use `autofocus` — it disrupts screen reader flow on page load.
+
 ## Universal rules
 
 - Every page has a unique `<title>`.
@@ -31,6 +47,16 @@ description: Use when building or auditing accessible UI — modals, drawers, dr
 - Focus indicators are visible (`:focus-visible` outline, ≥ 3:1 contrast).
 - ARIA only when native HTML can't express the relationship. Prefer `<button>` over `<div role="button">`.
 - Skip link to main content at the top of the page.
+
+## Navigation ARIA
+
+- Use `aria-current="page"` on the active link in primary navigation:
+  ```liquid
+  <a href="{{ link.url }}" {% if link.active %}aria-current="page"{% endif %}>
+    {{ link.title }}
+  </a>
+  ```
+- **Do not use `role="menu"` or `role="menuitem"`** for navigation menus. These roles imply application-menu keyboard behavior and are wrong for site navigation. Use `<nav>` with a list of `<a>` elements.
 
 ## Landmarks
 
@@ -128,6 +154,7 @@ For text on images, add an overlay or text shadow to guarantee contrast in worst
 ## Forms
 
 - Every input has a visible `<label>` or `aria-label`.
+- Add `autocomplete` attribute to all inputs where browser auto-fill applies (`email`, `given-name`, `family-name`, `postal-code`, `tel`, `new-password`, `current-password`, etc.).
 - Required fields use `required` attribute (NOT only `aria-required`).
 - Error messages use `aria-describedby` linking the error to the input.
 - Group related inputs in `<fieldset>` with `<legend>`.
@@ -164,6 +191,70 @@ In Liquid:
    alt: product.title | escape
 }}
 ```
+
+## Mobile & touch
+
+- Touch targets on primary controls must be at least **44 × 44 px**. Apply to main menu links, cart button, hamburger toggle, close buttons, variant selectors, and submit buttons:
+  ```css
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  ```
+- Support pinch-to-zoom — do not suppress it via viewport meta (see page-level requirements above).
+- Provide single-tap alternatives for any multi-finger gesture.
+- Never lock orientation — support both portrait and landscape.
+
+## Tables
+
+Use semantic table markup for data tables (size charts, comparison tables, order history):
+
+```html
+<table>
+  <caption>Product size chart</caption>
+  <thead>
+    <tr>
+      <th scope="col">Size</th>
+      <th scope="col">Chest (cm)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">S</th>
+      <td>88</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+- `<caption>` identifies the table for screen readers.
+- `<th scope="col">` for column headers, `<th scope="row">` for row headers.
+- Never use `<table>` for layout.
+
+## Video and audio
+
+### Video
+
+- Provide closed captions for all video content.
+- Mute any auto-playing video by default (`muted` attribute).
+- Allow pausing via the Space key.
+- Provide descriptive audio for video where visual content conveys meaning.
+
+```html
+<video autoplay muted loop playsinline>
+  <source src="{{ 'video.mp4' | asset_url }}" type="video/mp4">
+  <track kind="captions" src="{{ 'captions-en.vtt' | asset_url }}" srclang="en" label="English">
+</video>
+```
+
+### Audio
+
+- Provide transcripts for all audio content.
+- Allow pausing of auto-playing audio.
+- Use native `<audio>` controls.
 
 ## SVG icons
 
@@ -249,6 +340,24 @@ For detailed ARIA patterns for specific components, see:
 - Dropdown menu → https://www.w3.org/WAI/ARIA/apg/patterns/menubar/
 - Modal dialog → https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
 - Tabs → https://www.w3.org/WAI/ARIA/apg/patterns/tabs/
+
+## Testing & validation tools
+
+- **[Accessibility Insights for Web](https://accessibilityinsights.io/)** — guided WCAG assessment, FastPass checks.
+- **[WAVE](https://wave.webaim.org/)** — visual accessibility feedback directly on the page.
+- **[W3C HTML Validator](https://validator.w3.org/)** — catch missing `alt`, invalid ARIA, structural errors.
+- **Lighthouse** (built into Chrome DevTools) — automated a11y score, target ≥ 90 for Theme Store.
+- **Shopify Lighthouse CI GitHub Action** — automate a11y checks on every PR:
+  ```yaml
+  # .github/workflows/lighthouse.yml
+  name: Lighthouse CI
+  on: [pull_request]
+  jobs:
+    lighthouse:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: Shopify/lighthouse-ci-action@v1
+  ```
 
 ## References
 
