@@ -59,26 +59,7 @@ Each `SKILL.md` is self-contained Markdown. Copy the relevant sections into what
 
 ## Contributing
 
-Contributions are welcome. A good skill is:
-
-- **Focused** — one topic per skill, not a catch-all.
-- **Actionable** — concrete rules the AI can follow, not vague advice.
-- **Sourced** — links to official Shopify docs or a real-world rationale.
-
-To contribute:
-
-1. Fork the repo.
-2. Create a new directory `shopify-<topic>/` with a `SKILL.md` inside, or edit an existing one.
-3. Follow the frontmatter format:
-   ```markdown
-   ---
-   name: shopify-topic
-   description: Use when ...
-   ---
-   ```
-4. Open a pull request with a short description of what changed and why.
-
-Bug reports and corrections to existing skills are equally appreciated — open an issue.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
