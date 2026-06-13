@@ -1,8 +1,15 @@
 # shopify-skills
 
-A collection of Claude Code skills for building and maintaining Shopify themes.
+A collection of AI coding assistant skills for building and maintaining Shopify themes.
 
-Each skill is a focused rule set for a specific area of a Shopify theme — sections, snippets, blocks, Liquid, CSS, JavaScript, performance, accessibility, and more. When you drop this repo into your project's `.claude/skills/` directory, Claude Code auto-discovers and activates the skills, using them as context whenever a matching task comes up.
+Each skill is a focused rule set for a specific area of a Shopify theme — sections, snippets, blocks, Liquid, CSS, JavaScript, performance, accessibility, and more. The skills are written in plain Markdown with YAML frontmatter, making them compatible with any AI tool that supports context files:
+
+| Tool | Convention | How to use |
+|---|---|---|
+| **Claude Code** | `.claude/skills/` + `SKILL.md` | Auto-discovered on session start via `Skill` tool |
+| **Cursor** | `.cursor/rules/` + `.mdc` files | Copy content into rule files |
+| **GitHub Copilot** | `.github/copilot-instructions.md` | Paste relevant skill content |
+| **Gemini CLI** | `GEMINI.md` | Reference or include skill content |
 
 ## Skills included
 
@@ -26,6 +33,8 @@ Each skill is a focused rule set for a specific area of a Shopify theme — sect
 
 ## Installation
 
+### Claude Code
+
 Clone or copy this repo into your project's `.claude/skills/` directory:
 
 ```bash
@@ -38,7 +47,42 @@ Or add it as a git submodule:
 git submodule add https://github.com/mattiadragone/shopify-skills .claude/skills/shopify
 ```
 
-Claude Code will discover the skills automatically on the next session start.
+Skills are auto-discovered on the next session start.
+
+### Cursor
+
+Copy individual `SKILL.md` files into `.cursor/rules/` renaming them to `.mdc`. Each file's frontmatter `description` field maps to Cursor's rule description.
+
+### Other tools
+
+Each `SKILL.md` is self-contained Markdown. Copy the relevant sections into whatever context file your AI tool reads (`.github/copilot-instructions.md`, `GEMINI.md`, system prompt, etc.).
+
+## Contributing
+
+Contributions are welcome. A good skill is:
+
+- **Focused** — one topic per skill, not a catch-all.
+- **Actionable** — concrete rules the AI can follow, not vague advice.
+- **Sourced** — links to official Shopify docs or a real-world rationale.
+
+To contribute:
+
+1. Fork the repo.
+2. Create a new directory `shopify-<topic>/` with a `SKILL.md` inside, or edit an existing one.
+3. Follow the frontmatter format:
+   ```markdown
+   ---
+   name: shopify-topic
+   description: Use when ...
+   ---
+   ```
+4. Open a pull request with a short description of what changed and why.
+
+Bug reports and corrections to existing skills are equally appreciated — open an issue.
+
+## License
+
+[MIT](LICENSE) — Mattia Dragone
 
 ## Sources
 
