@@ -12,6 +12,11 @@ description: Use when creating or modifying templates in templates/*.json or tem
 - Adding an alternate template (e.g., `product.featured.json`).
 - Adjusting the `gift_card.liquid` template.
 
+## Always pair with
+
+- `shopify-base` — universal rules (mandatory for all theme files)
+- `shopify-sections` — JSON templates reference sections; section schema knowledge required
+
 ## Required templates (Theme Store)
 
 For Theme Store submission a theme MUST provide:

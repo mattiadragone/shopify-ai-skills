@@ -12,6 +12,12 @@ description: Use when auditing a theme for Shopify Theme Store submission or rev
 - Building a checklist for QA before a major release.
 - Answering "is this allowed for a Theme Store theme?" questions.
 
+## Always pair with
+
+- `shopify-base` — mandatory universal rules that are also Theme Store requirements
+- `shopify-accessibility` — Lighthouse a11y ≥ 90 is a hard submission threshold
+- `shopify-performance` — Lighthouse performance ≥ 60 is a hard submission threshold
+
 ## Hard thresholds
 
 | Area | Threshold |

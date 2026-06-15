@@ -12,6 +12,12 @@ description: Use when writing or modifying JS in assets/*.js or inside {% javasc
 - Listening to Shopify theme editor events (`shopify:section:load`, `shopify:block:select`, etc.).
 - Debugging script load order or "swiper.swiper is undefined" race conditions.
 
+## Always pair with
+
+- `shopify-base` — universal rules; `defer` on all scripts is a base requirement
+- `shopify-performance` — bundle size limit (≤ 16 KB minified), no blocking scripts
+- `shopify-accessibility` — modals, drawers, and interactive elements require JS-side focus management
+
 ## Theme Store JS rules
 
 - **No minified first-party JS** in `assets/`. Reviewers want readable source.

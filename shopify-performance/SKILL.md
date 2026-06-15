@@ -12,6 +12,13 @@ description: Use when optimizing a theme for Lighthouse, Core Web Vitals, or pag
 - Investigating a slow page after a feature was added.
 - Auditing CSS / JS bundle sizes before submission.
 
+## Always pair with
+
+- `shopify-base` — lazy loading and defer are defined here as universal rules
+- `shopify-javascript` — JS bundle size, defer order, and IIFE scoping affect performance
+- `shopify-css` — `{% stylesheet %}` bundle size and conditional template loading
+- `shopify-assets` — image optimization, `image_tag` widths, and font loading patterns
+
 ## Theme Store performance threshold
 
 Lighthouse performance ≥ 60 (mobile + desktop) on:

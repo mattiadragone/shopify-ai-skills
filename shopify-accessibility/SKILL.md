@@ -12,6 +12,12 @@ description: Use when building or auditing accessible UI — modals, drawers, dr
 - Adding keyboard shortcuts or focus management.
 - Reviewing color tokens and contrast ratios.
 
+## Always pair with
+
+- `shopify-base` — universal rules; `alt` attributes and lazy loading are defined here
+- `shopify-javascript` — focus management, `aria-expanded`, keyboard trapping require JS implementation
+- `shopify-css` — focus-visible, reduced-motion, and forced-colors rules live in CSS
+
 ## Theme Store a11y thresholds
 
 | Check | Threshold |

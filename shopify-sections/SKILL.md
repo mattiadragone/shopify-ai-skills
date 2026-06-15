@@ -13,6 +13,14 @@ description: Use when creating or modifying section liquid files in sections/*.l
 - Migrating a separate `section-X.css` file into a section's inline `{% stylesheet %}` block.
 - Dealing with section group JSON files (`sections/header-group.json`, `sections/footer-group.json`).
 
+## Always pair with
+
+- `shopify-base` — CSS bundle pitfall, t: prefix, defer, lazy loading (mandatory for all theme files)
+- `shopify-css` — when the section has `{% stylesheet %}` blocks
+- `shopify-liquid` — when writing Liquid logic inside the section
+- `shopify-locales` — all schema `label`/`name`/`info` fields require `t:` prefix
+- `shopify-blocks` — sections that accept blocks need block schema knowledge
+
 ## Anatomy of a section
 
 A section file has up to four parts in this order:

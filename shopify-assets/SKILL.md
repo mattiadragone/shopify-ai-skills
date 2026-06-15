@@ -12,6 +12,11 @@ description: Use when adding, removing, or referencing files in the assets/ dire
 - Deciding whether something should go in `assets/` or as inline output.
 - Cleaning up unused asset files.
 
+## Always pair with
+
+- `shopify-base` — universal rules (mandatory for all theme files)
+- `shopify-performance` — image optimization, lazy loading, and bundle size audit live here
+
 ## The flat-directory rule
 
 `assets/` is **flat** — no subdirectories. Every file lives at the top of `assets/`. This is enforced by Shopify and cannot be changed.

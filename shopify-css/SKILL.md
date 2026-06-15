@@ -12,6 +12,11 @@ description: Use when writing or refactoring CSS in assets/*.css or inside {% st
 - Migrating SCSS → CSS for Theme Store compliance.
 - Refactoring inline `{% stylesheet %}` content into reusable files.
 
+## Always pair with
+
+- `shopify-base` — universal rules; the `{% stylesheet %}` pitfall is the most critical shared concern
+- `shopify-performance` — bundle size, critical CSS, and per-template conditional loading
+
 ## Theme Store CSS rules (HARD constraints)
 
 - **Plain CSS only** — no SCSS / SASS / LESS / Stylus source files in the theme. Compiled output is fine.

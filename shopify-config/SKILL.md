@@ -12,6 +12,11 @@ description: Use when modifying config/settings_schema.json (global theme settin
 - Reading or migrating `settings_data.json` between themes.
 - Adding a color scheme group.
 
+## Always pair with
+
+- `shopify-base` — universal rules (mandatory for all theme files)
+- `shopify-locales` — every `label`, `info`, and `name` in settings_schema must be a `t:` key
+
 ## The two files
 
 - **`config/settings_schema.json`** — defines what settings exist and how they render in the theme editor sidebar. Edited by the developer.

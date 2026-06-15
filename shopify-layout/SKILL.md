@@ -12,6 +12,13 @@ description: Use when modifying layout/theme.liquid or layout/password.liquid. C
 - Working on `layout/password.liquid` (separate from `theme.liquid`).
 - Wiring section groups for header / footer.
 
+## Always pair with
+
+- `shopify-base` — universal rules (mandatory for all theme files)
+- `shopify-css` — global CSS is loaded from layout; conditional loading pattern matters
+- `shopify-javascript` — global JS is loaded from layout; defer order matters
+- `shopify-sections` — section groups (`header-group.json`, `footer-group.json`) are wired here
+
 ## The two layouts
 
 - `layout/theme.liquid` — wraps every storefront page (product, collection, cart, etc.).

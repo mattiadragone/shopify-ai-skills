@@ -12,6 +12,10 @@ description: Use when writing or debugging Liquid code in any .liquid file. Cove
 - Choosing between control flow tags (`if` / `unless` / `case`).
 - Refactoring nested Liquid into a `{% liquid %}` block.
 
+## Always pair with
+
+- `shopify-base` — universal rules (mandatory for all theme files)
+
 ## Output and tags
 
 Two syntaxes:

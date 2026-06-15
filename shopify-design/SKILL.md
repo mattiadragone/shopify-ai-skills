@@ -13,6 +13,12 @@ description: Use when designing sections, blocks, or full theme layouts. Covers 
 - Setting up empty states and default placeholders.
 - Reviewing a design for dark patterns.
 
+## Always pair with
+
+- `shopify-base` — universal rules (mandatory for all theme files)
+- `shopify-accessibility` — antifragile layouts and touch targets have direct a11y implications
+- `shopify-performance` — visual effects, animations, and rich media must not break Lighthouse scores
+
 ## Core principle
 
 Design for the merchant first, then the customer. A well-designed theme is easy for merchants to configure AND builds trust with shoppers.

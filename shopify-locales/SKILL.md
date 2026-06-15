@@ -12,6 +12,13 @@ description: Use when adding or modifying translations in locales/*.json. Covers
 - Translating an existing theme to a new language.
 - Decoding a missing `t:` key error in the theme editor.
 
+## Always pair with
+
+- `shopify-base` — universal rules (the `t:` prefix requirement originates here)
+- `shopify-sections` — section `name`, `label`, and `preset name` all need `t:` keys
+- `shopify-blocks` — block `name` and settings `label`/`info` all need `t:` keys
+- `shopify-config` — `settings_schema.json` labels require `t:` keys in the schema locale file
+
 ## The four file types
 
 `locales/` contains four flavors of JSON files per language:

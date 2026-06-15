@@ -12,6 +12,12 @@ description: Use when creating or modifying reusable snippet liquid files in sni
 - Replacing inline duplicated markup with a render call to a snippet.
 - Decoding why a snippet is failing silently in production.
 
+## Always pair with
+
+- `shopify-base` — CSS bundle pitfall, t: prefix, defer, lazy loading (mandatory for all theme files)
+- `shopify-css` — when the snippet has `{% stylesheet %}` blocks
+- `shopify-liquid` — when writing Liquid logic inside the snippet
+
 ## Anatomy of a snippet
 
 Snippets are reusable Liquid components called via `{% render 'snippet-name', param: value %}`. Unlike sections, they have NO schema, NO presets, and are not standalone units in the theme editor.

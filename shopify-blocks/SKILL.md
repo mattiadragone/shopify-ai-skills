@@ -12,6 +12,14 @@ description: Use when creating or modifying theme blocks in blocks/*.liquid. Cov
 - Nesting blocks inside other blocks (theme block composition).
 - Migrating section-level blocks (`{ "type": "...", "settings": [] }` inside the section schema) to standalone theme blocks.
 
+## Always pair with
+
+- `shopify-base` — CSS bundle pitfall, t: prefix, block.shopify_attributes, lazy loading (mandatory)
+- `shopify-css` — when the block has `{% stylesheet %}` blocks
+- `shopify-liquid` — when writing Liquid logic inside the block
+- `shopify-locales` — all schema `label`/`name`/`info` fields require `t:` prefix
+- `shopify-sections` — blocks always live within sections; section schema governs what blocks are accepted
+
 ## Theme blocks vs section-level blocks
 
 There are two block systems in Shopify themes:
