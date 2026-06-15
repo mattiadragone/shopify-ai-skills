@@ -31,6 +31,7 @@ Each skill is a focused rule set for a specific area of a Shopify theme — sect
 | `shopify-accessibility` | WCAG 2.1 AA patterns |
 | `shopify-performance` | Lighthouse / Core Web Vitals |
 | `shopify-cli-tools` | Shopify CLI, theme-check, Prettier, Inspector |
+| `shopify-version-control` | Branch strategy, source vs compiled code, git subtree, GitHub integration |
 
 ## Installation
 
