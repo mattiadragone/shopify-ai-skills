@@ -22,6 +22,41 @@ Lighthouse performance ≥ 60 (mobile + desktop) on:
 
 Tested with the Shopify Theme Inspector and `lighthouse-ci`.
 
+### Weighted score formula
+
+Shopify uses this formula to calculate the overall speed score:
+
+```
+Speed score = [(product_score × 31) + (collection_score × 33) + (home_score × 13)] / 77
+```
+
+The result must be ≥ 60 for Theme Store acceptance.
+
+### Benchmark setup
+
+Before testing Lighthouse scores for Theme Store submission:
+
+1. Import the [test product CSV](https://shopify.dev/docs/storefronts/themes/best-practices/performance/lighthouse) to your development store.
+2. Ensure no other products or collections exist — clean baseline only.
+3. Test home page, product page (a typical product), and collection page.
+
+### Lighthouse CI automation
+
+Add the Shopify Lighthouse CI GitHub Action to catch regressions on every PR:
+
+```yaml
+# .github/workflows/lighthouse.yml
+name: Lighthouse CI
+on: [pull_request]
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Shopify/lighthouse-ci-action@v1
+```
+
+Reference: https://github.com/Shopify/lighthouse-ci-action
+
 ## Core Web Vitals targets
 
 | Metric | Good | Needs improvement | Poor |
@@ -84,6 +119,19 @@ Preload only the most critical font weight:
 <link rel="preload" as="font" href="{{ settings.font_body | font_url }}" type="font/woff2" crossorigin>
 ```
 
+## Resource hints
+
+Shopify recommends **at most 2 preload hints per template**. More than 2 compete for bandwidth and can hurt LCP by delaying other critical resources.
+
+Use `preload_tag` or the `preload:` keyword on `image_tag` / `stylesheet_tag`:
+
+```liquid
+{{ 'base.css' | asset_url | stylesheet_tag: preload: true }}
+{{ product.featured_image | image_tag: preload: true, loading: 'eager' }}
+```
+
+Count your preloads per template — if > 2, remove the least critical ones.
+
 ## CSS
 
 ### Inline critical CSS in the layout `<head>`
@@ -112,6 +160,10 @@ grep -h -A 999 '{%- stylesheet -%}' sections/*.liquid snippets/*.liquid blocks/*
 
 If > 50 KB, consider moving cross-cutting rules to `base.css` instead.
 
+### CSS subsetting compatibility
+
+Shopify automatically subsets (removes unused CSS) from theme stylesheets. For subsetting to work correctly, CSS classes must only be used within the file that defines them. Don't reference a class defined in `base.css` from inside a `{% stylesheet %}` block — the subsetter may remove it.
+
 ## JavaScript
 
 ### Defer non-critical JS
@@ -121,6 +173,32 @@ If > 50 KB, consider moving cross-cutting rules to `base.css` instead.
 ```
 
 Never use `async` for theme JS that has ordering dependencies. `defer` preserves document order.
+
+### Bundle size limit
+
+Minified JavaScript per theme entry point must be **≤ 16 KB**. Larger bundles increase parse time on low-end mobile.
+
+```bash
+# Check minified size of a bundle
+esbuild assets/theme.js --bundle --minify | wc -c
+```
+
+### IIFE pattern for namespace safety
+
+Wrap theme JS in an IIFE to avoid polluting the global namespace and colliding with apps or Shopify's own scripts:
+
+```js
+(function () {
+  'use strict';
+  // theme code here
+})();
+```
+
+Alternatively, use ES modules (`type="module"`) — they are scoped by default.
+
+### Avoid heavy external frameworks
+
+Don't bundle React, Angular, Vue, or jQuery. These add 30–100 KB+ minified and dominate the 16 KB budget. Use native browser APIs and Custom Elements instead — the approach used by Shopify's own Horizon and Dawn themes.
 
 ### Don't ship inline `<script>` blocks
 
