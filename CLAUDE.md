@@ -22,32 +22,38 @@ AUDIT LAYER    shopify-audit-critical, shopify-audit-quality, shopify-audit-subm
 ## Layout
 
 ```
-.claude/skills/
+.claude/
+├── skills/
+│   ├── shopify-base/              # Universal rules — load with every build skill
+│   │
+│   ├── shopify-sections/          # sections/*.liquid
+│   ├── shopify-snippets/          # snippets/*.liquid
+│   ├── shopify-blocks/            # blocks/*.liquid
+│   ├── shopify-templates/         # templates/*.json + gift_card.liquid
+│   ├── shopify-layout/            # layout/theme.liquid + password.liquid
+│   ├── shopify-assets/            # assets/ — asset_url, image_tag, SVG a11y
+│   ├── shopify-config/            # config/settings_schema.json
+│   ├── shopify-locales/           # locales/ — t: keys, fallback chain
+│   │
+│   ├── shopify-liquid/            # Liquid syntax, tags, filters
+│   ├── shopify-css/               # CSS standards, {% stylesheet %} scope pitfall
+│   ├── shopify-javascript/        # JS, Custom Elements, {% javascript %} bundle
+│   │
+│   ├── shopify-theme-store/       # Theme Store submission requirements
+│   ├── shopify-accessibility/     # WCAG 2.1 AA, component patterns
+│   ├── shopify-performance/       # Lighthouse, CWV, image lazy loading
+│   ├── shopify-design/            # Design principles, antifragile layouts, merchant UX
+│   ├── shopify-tooling/           # Shopify CLI, theme-check, Prettier, version control
+│   │
+│   ├── shopify-audit-critical/    # Blocking error checks (CSS scoping, t: prefix, etc.)
+│   ├── shopify-audit-quality/     # Performance/a11y quality checks
+│   └── shopify-audit-submission/  # Theme Store compliance checklist
 │
-├── shopify-base/              # Universal rules — load with every build skill
+├── commands/
+│   ├── shopify-audit.md           # /shopify-audit — full 3-layer audit
+│   └── shopify-build.md           # /shopify-build <file> — build with correct skills
 │
-├── shopify-sections/          # sections/*.liquid
-├── shopify-snippets/          # snippets/*.liquid
-├── shopify-blocks/            # blocks/*.liquid
-├── shopify-templates/         # templates/*.json + gift_card.liquid
-├── shopify-layout/            # layout/theme.liquid + password.liquid
-├── shopify-assets/            # assets/ — asset_url, image_tag, SVG a11y
-├── shopify-config/            # config/settings_schema.json
-├── shopify-locales/           # locales/ — t: keys, fallback chain
-│
-├── shopify-liquid/            # Liquid syntax, tags, filters
-├── shopify-css/               # CSS standards, {% stylesheet %} scope pitfall
-├── shopify-javascript/        # JS, Custom Elements, {% javascript %} bundle
-│
-├── shopify-theme-store/       # Theme Store submission requirements
-├── shopify-accessibility/     # WCAG 2.1 AA, component patterns
-├── shopify-performance/       # Lighthouse, CWV, image lazy loading
-├── shopify-design/            # Design principles, antifragile layouts, merchant UX
-├── shopify-tooling/           # Shopify CLI, theme-check, Prettier, version control
-│
-├── shopify-audit-critical/    # Blocking error checks (CSS scoping, t: prefix, etc.)
-├── shopify-audit-quality/     # Performance/a11y quality checks
-└── shopify-audit-submission/  # Theme Store compliance checklist
+└── hooks/                         # optional project-specific automation
 ```
 
 ## Build mode — skill trigger map

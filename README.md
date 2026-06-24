@@ -6,7 +6,7 @@ Each skill is a focused rule set for a specific area of a Shopify theme. Skills 
 
 | Tool | Convention | How to use |
 |---|---|---|
-| **Claude Code** | `.claude/skills/` + `SKILL.md` | Auto-discovered via `Skill` tool |
+| **Claude Code** | `.claude/skills/` + `SKILL.md` | Auto-discovered via `Skill` tool; `/shopify-audit` and `/shopify-build` slash commands included |
 | **Cursor** | `.cursor/rules/` + `.mdc` files | Copy content into rule files |
 | **GitHub Copilot** | `.github/copilot-instructions.md` | Paste relevant skill content |
 | **Gemini CLI** | `GEMINI.md` | Reference or include skill content |
@@ -137,19 +137,25 @@ Run audit skills against an existing repo. No code is written — only inspectio
 
 ### Claude Code
 
-Clone this repo into your project's `.claude/skills/` directory:
+Install with the included script (requires bash):
 
 ```bash
-git clone https://github.com/mattiadragone/shopify-ai-skills .claude/skills/shopify
+git clone https://github.com/mattiadragone/shopify-ai-skills /tmp/shopify-ai-skills
+bash /tmp/shopify-ai-skills/scripts/install.sh
 ```
 
-Or add it as a git submodule:
+This copies skills into `.claude/skills/shopify-*/` and slash commands into `.claude/commands/` in your current project.
+
+Or install manually:
 
 ```bash
-git submodule add https://github.com/mattiadragone/shopify-ai-skills .claude/skills/shopify
+git clone https://github.com/mattiadragone/shopify-ai-skills /tmp/shopify-ai-skills
+mkdir -p .claude/skills .claude/commands
+cp -r /tmp/shopify-ai-skills/.claude/skills/shopify-* .claude/skills/
+cp -r /tmp/shopify-ai-skills/.claude/commands/shopify-* .claude/commands/
 ```
 
-Skills are auto-discovered on the next session start. The AI picks up skills by name when the task matches their `description` field.
+Skills are auto-discovered on session start. Use `/shopify-audit` to run a full theme audit or `/shopify-build <file>` to build a file with the correct skills loaded automatically.
 
 ### Cursor
 
