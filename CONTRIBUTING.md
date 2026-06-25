@@ -1,36 +1,63 @@
 # Contributing
 
-Contributions are welcome — new skills, corrections to existing ones, and bug reports are all equally valuable.
+Contributions are welcome — rule corrections, new knowledge files, and bug reports are all valuable.
 
-## What makes a good skill
+The project has two kinds of content. Know which you're changing:
 
-- **Focused** — one topic per skill, not a catch-all.
-- **Actionable** — concrete rules the AI can follow, not vague advice.
-- **Sourced** — links to official Shopify docs or a clear real-world rationale.
-- **Tested** — ideally verified against a real Shopify theme before submitting.
+- **`knowledge/`** — the rules. Anatomy, rules, examples, thresholds. One topic per file. Single source of
+  truth.
+- **`skills/`** — the actions. A small set of operation skills that read from `knowledge/`.
 
-## Adding or editing a skill
+## Changing a rule
 
-1. Fork the repo and create a branch.
-2. For a **new skill**: create a directory `shopify-<topic>/` with a `SKILL.md` inside.
-3. For an **existing skill**: edit the relevant `SKILL.md` directly.
-4. Follow the frontmatter format:
+Edit the one file in `knowledge/` that owns it. Because skills reference knowledge instead of copying it,
+every skill that uses the rule updates automatically. Don't restate a cross-cutting rule in multiple
+files — link to its canonical home in `knowledge/universal.md` instead.
+
+A good knowledge file is:
+
+- **Focused** — one area per file, not a catch-all.
+- **Actionable** — concrete rules with code examples, not vague advice.
+- **Sourced** — links to official Shopify docs or a clear rationale.
+- **Deduplicated** — references `universal.md` for cross-cutting rules rather than repeating them.
+
+## Adding a knowledge file
+
+1. Create it under `knowledge/areas/`, `knowledge/languages/`, or `knowledge/quality/`.
+2. Add minimal frontmatter:
    ```markdown
    ---
-   name: shopify-topic
+   title: Topic
+   summary: One line describing what rules this file holds.
+   ---
+   ```
+3. Add it to the layout in `knowledge/README.md`.
+4. Reference it from the routing table of the relevant skill (`skills/*/SKILL.md`).
+
+## Adding an action skill
+
+Add a skill **only if it is a genuinely distinct, useful action** (like build or audit). Design,
+optimization, and submission are deliberately *not* skills — they are covered by knowledge plus the
+existing actions.
+
+1. Create `skills/shopify-<action>/SKILL.md` with frontmatter:
+   ```markdown
+   ---
+   name: shopify-action
    description: Use when ...
    ---
    ```
-5. Add a row to the skill table in `README.md` if it's a new skill.
-6. Open a pull request with a short description of what changed and why.
+2. Keep the skill thin: when to invoke, a routing section that names the `knowledge/` files it reads, a
+   procedure, and example prompts.
+3. Add it to the skills table in `README.md` and `CLAUDE.md`.
 
 ## Reporting issues
 
-Open an issue if you find:
+Open an issue for:
 
-- Outdated information (Shopify changes its APIs and conventions frequently).
-- Missing coverage for a common Shopify theme pattern.
-- Conflicts or contradictions between skills.
+- Outdated information (Shopify changes APIs and conventions frequently).
+- Missing coverage for a common theme pattern.
+- Conflicts or contradictions between knowledge files.
 
 ## Code of conduct
 

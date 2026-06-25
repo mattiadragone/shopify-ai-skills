@@ -1,171 +1,117 @@
 # shopify-ai-skills
 
-A collection of AI coding assistant skills for building and auditing Shopify themes.
+AI coding-assistant skills for building and auditing Shopify themes, for **Claude Code**.
 
-Each skill is a focused rule set for a specific area of a Shopify theme. Skills are plain Markdown files with YAML frontmatter — compatible with any AI tool that supports context files.
+The project separates two things that used to be tangled together:
 
-| Tool | Convention | How to use |
-|---|---|---|
-| **Claude Code** | `.claude/skills/` + `SKILL.md` | Auto-discovered via `Skill` tool |
-| **Cursor** | `.cursor/rules/` + `.mdc` files | Copy content into rule files |
-| **GitHub Copilot** | `.github/copilot-instructions.md` | Paste relevant skill content |
-| **Gemini CLI** | `GEMINI.md` | Reference or include skill content |
+- **`knowledge/`** — the *rules*. One file per Shopify area (sections, CSS, performance…). The single
+  source of truth. No actions, just rules, examples, and thresholds.
+- **`skills/`** — the *actions*. A small set of operation skills (build, audit, tooling) that **read from
+  `knowledge/`** based on the operation in progress.
+
+Change a rule once in `knowledge/`, and every skill that uses it stays correct.
 
 ---
 
 ## Architecture
 
-Skills are organized in three layers that work together:
-
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  AUDIT LAYER (inspect existing repos)                          │
-│  shopify-audit-critical  shopify-audit-quality                 │
-│  shopify-audit-submission                                      │
-├────────────────────────────────────────────────────────────────┤
-│  BUILD LAYER (create or edit theme code)                       │
-│  shopify-sections   shopify-snippets   shopify-blocks          │
-│  shopify-templates  shopify-layout     shopify-assets          │
-│  shopify-config     shopify-locales    shopify-liquid          │
-│  shopify-css        shopify-javascript shopify-performance     │
-│  shopify-accessibility  shopify-theme-store  shopify-design    │
-│  shopify-tooling                                               │
-├────────────────────────────────────────────────────────────────┤
-│  BASE LAYER (always loaded with every build skill)             │
-│  shopify-base                                                  │
-└────────────────────────────────────────────────────────────────┘
+shopify-ai-skills/
+│
+├── knowledge/                  ← RULES (single source of truth)
+│   ├── universal.md            cross-cutting rules — load for any task
+│   ├── areas/                  sections · snippets · blocks · templates · layout · assets · config · locales
+│   ├── languages/              liquid · css · javascript
+│   └── quality/                performance · accessibility · design · theme-store
+│
+└── skills/                     ← ACTIONS (read from knowledge/)
+    ├── shopify-build/          create or modify theme code
+    ├── shopify-audit/          inspect an existing repo (read-only report)
+    └── shopify-tooling/        CLI, theme-check, Prettier, version control, build pipelines
 ```
 
-### Base layer
+### Why three skills
 
-`shopify-base` contains universal rules that apply to every Shopify theme file:
+A skill is worth having only if it is a useful **action**. We keep the three that are:
 
-- `{% stylesheet %}` global bundle pitfall — the most critical cross-cutting rule
-- `t:` prefix mandatory in all schema strings
-- `defer` on all scripts
-- `block.shopify_attributes` on every block root element
-- Images require `loading="lazy"` and explicit `width`/`height`
-- Theme Store code baseline
+| Skill | Action | What it does |
+|---|---|---|
+| **shopify-build** | *Create / edit code* | Routes to the right `knowledge/` files by the file type you touch, then writes conforming code. Designing a section/block happens here (it reads `quality/design.md`). |
+| **shopify-audit** | *Inspect & report* | Read-only. Runs `shopify theme check` + targeted greps across three levels (critical → quality → submission). Each finding shows severity, location, the fix, **why it matters**, and a link to the knowledge file. |
+| **shopify-tooling** | *Set up / run the toolchain* | Shopify CLI, theme-check config, Prettier, Theme Inspector, version control strategy, CI, build pipelines. |
 
-Load `shopify-base` alongside every other build skill. It is never useful alone.
+Things that are **not** standalone actions live in `knowledge/` instead:
 
-### Build layer
-
-Build skills guide code creation for specific file types. Each skill includes an **Always pair with** section listing which other skills should be loaded alongside it — because working on one file type almost always affects another (CSS scoping, t: keys, performance).
-
-### Audit layer
-
-Audit skills run diagnostic checks against an existing repo without writing any code. They contain shell commands, grep patterns, and severity-ordered checklists that surface errors before a review or Theme Store submission.
+- **Design** → `knowledge/quality/design.md` (read by `shopify-build` when designing).
+- **Optimize** → `shopify-audit` finds perf/a11y issues, `shopify-build` fixes them.
+- **Submit** → the submission level of `shopify-audit` + `knowledge/quality/theme-store.md`.
 
 ---
 
-## Build mode — which skills to use
+## How it works in practice
 
-Load `shopify-base` + the skills matching what you are working on:
+1. You ask for something (e.g. "create a hero section").
+2. The matching skill triggers (`shopify-build`).
+3. The skill reads `knowledge/universal.md` plus the files for what you're touching
+   (`areas/sections.md`, `languages/css.md`, `areas/locales.md`, `quality/design.md`).
+4. It writes code that follows those rules.
 
-| Task | Load these skills |
-|---|---|
-| Create or edit a section | `shopify-base` + `shopify-sections` + `shopify-css` + `shopify-locales` |
-| Create or edit a block | `shopify-base` + `shopify-blocks` + `shopify-css` + `shopify-locales` |
-| Create or edit a snippet | `shopify-base` + `shopify-snippets` + `shopify-css` + `shopify-liquid` |
-| Edit `layout/theme.liquid` | `shopify-base` + `shopify-layout` + `shopify-css` + `shopify-javascript` |
-| Edit JSON templates | `shopify-base` + `shopify-templates` + `shopify-sections` |
-| Write Liquid logic | `shopify-base` + `shopify-liquid` |
-| Write CSS | `shopify-base` + `shopify-css` + `shopify-performance` |
-| Write JavaScript | `shopify-base` + `shopify-javascript` + `shopify-performance` + `shopify-accessibility` |
-| Performance optimization | `shopify-base` + `shopify-performance` + `shopify-javascript` + `shopify-css` |
-| Accessibility fixes | `shopify-base` + `shopify-accessibility` + `shopify-javascript` + `shopify-css` |
-| Design layout / UX | `shopify-base` + `shopify-design` + `shopify-accessibility` + `shopify-performance` |
-| Theme Store prep | `shopify-base` + `shopify-theme-store` + `shopify-accessibility` + `shopify-performance` |
-| Tooling / CLI / version control | `shopify-tooling` |
+For an audit, `shopify-audit` runs `theme check` and the level's checks, then reports findings with the
+knowledge reference explaining each one.
 
 ---
 
-## Audit mode — which skills to use
+## Example prompts
 
-Run audit skills against an existing repo. No code is written — only inspection.
+**Build**
+- "Create a hero section with a heading, subheading, image, and CTA."
+- "Add a testimonials block that nests inside the reviews section."
+- "Refactor `snippets/product-card.liquid` to use responsive `image_tag`."
+- "Make the cart drawer keyboard-accessible with focus trapping."
 
-| Audit goal | Load this skill |
-|---|---|
-| Check for blocking errors before merge | `shopify-audit-critical` |
-| Check Lighthouse / performance / a11y quality | `shopify-audit-quality` |
-| Prepare for Theme Store submission | `shopify-audit-submission` |
-| Full pre-submission review | All three audit skills, in order |
+**Audit**
+- "Audit the theme before I merge this branch."
+- "Check this theme for Theme Store submission readiness."
+- "Why did my Lighthouse score drop? Run the quality audit."
 
----
-
-## Skills reference
-
-### Base
-
-| Skill | Covers |
-|---|---|
-| `shopify-base` | Universal rules for all theme files: CSS bundle pitfall, `t:` prefix, `defer`, `block.shopify_attributes`, lazy loading, code baseline |
-
-### Build
-
-| Skill | Covers |
-|---|---|
-| `shopify-sections` | `sections/*.liquid` — schema, settings, presets, section groups |
-| `shopify-snippets` | `snippets/*.liquid` — LiquidDoc, params, render vs include |
-| `shopify-blocks` | `blocks/*.liquid` — theme blocks, static vs dynamic, `@theme`/`@app` accept-lists |
-| `shopify-templates` | `templates/*.json` + `gift_card.liquid` — required templates, JSON format, alternates |
-| `shopify-layout` | `layout/theme.liquid` + `password.liquid` — head structure, section groups, CSS/JS loading |
-| `shopify-assets` | `assets/` — flat directory, `asset_url`, `image_tag`, SVG a11y, Theme Store code rules |
-| `shopify-config` | `config/settings_schema.json` — setting types, color schemes, font pickers |
-| `shopify-locales` | `locales/` — translation keys, fallback chain, storefront vs schema files |
-| `shopify-liquid` | Liquid syntax — tags, filters, `{% liquid %}` block, `render` vs `include` |
-| `shopify-css` | CSS — `{% stylesheet %}` scoping, custom properties, page-width grid, conditional loading |
-| `shopify-javascript` | JS — Custom Elements, `{% javascript %}` bundle, editor events, defer order, pubsub |
-| `shopify-performance` | Lighthouse / Core Web Vitals — images, fonts, JS bundle size, Liquid loops |
-| `shopify-accessibility` | WCAG 2.1 AA — focus management, ARIA, keyboard, color contrast, touch targets |
-| `shopify-theme-store` | Theme Store requirements — all thresholds, compliance rules, submission checklist |
-| `shopify-design` | Design principles — antifragile layouts, merchant UX, dark patterns, empty states |
-| `shopify-tooling` | Shopify CLI, `theme-check`, Prettier, Theme Inspector, version control, build tools |
-
-### Audit
-
-| Skill | Covers |
-|---|---|
-| `shopify-audit-critical` | Blocking errors: CSS scoping leaks, `t:` prefix, `block.shopify_attributes`, undeferred scripts, missing alt, `theme-check` |
-| `shopify-audit-quality` | Performance/a11y: Lighthouse scores, JS bundle size, preload count, touch targets, focus indicators, lazy loading |
-| `shopify-audit-submission` | Theme Store compliance: required templates, section groups, `@app`/`@theme` blocks, code rules, color schemes, Partner Program |
+**Tooling**
+- "Set up Shopify CLI and start a local dev server."
+- "Add a theme-check config and a CI workflow that fails on errors."
+- "Configure Prettier for Liquid and format all sections."
 
 ---
 
-## Installation
+## Installation (Claude Code)
 
-### Claude Code
-
-Clone this repo into your project's `.claude/skills/` directory:
+Clone into your project's `.claude/skills/` directory:
 
 ```bash
 git clone https://github.com/mattiadragone/shopify-ai-skills .claude/skills/shopify
 ```
 
-Or add it as a git submodule:
+Or as a submodule:
 
 ```bash
 git submodule add https://github.com/mattiadragone/shopify-ai-skills .claude/skills/shopify
 ```
 
-Skills are auto-discovered on the next session start. The AI picks up skills by name when the task matches their `description` field.
+The skills under `skills/` are auto-discovered on the next session start. Claude picks a skill by name
+when the task matches its `description`, then reads the `knowledge/` files it needs.
 
-### Cursor
+---
 
-Copy individual `SKILL.md` files into `.cursor/rules/`, renaming them to `.mdc`. Each file's frontmatter `description` field maps to Cursor's rule description. To always load the base layer, copy `shopify-base/SKILL.md` as `shopify-base.mdc` and set it to apply globally.
+## Skills reference
 
-### GitHub Copilot
+| Skill | Trigger | Reads from |
+|---|---|---|
+| `shopify-build` | Creating/editing any theme file or its Liquid/CSS/JS | `universal.md` + matching `areas/`, `languages/`, `quality/` files |
+| `shopify-audit` | Inspecting an existing repo before merge/submission | `universal.md` + `quality/*` for the "why" |
+| `shopify-tooling` | Setting up/running CLI, linting, CI, build pipelines | `quality/performance.md`, `quality/theme-store.md` |
 
-Paste relevant skill content into `.github/copilot-instructions.md`. Include the base layer at the top, followed by the build skills relevant to your project.
+## Knowledge reference
 
-### Gemini CLI
-
-Add skill content to `GEMINI.md` or reference it via `@file` in your prompt. The base layer should always be included.
-
-### Other tools
-
-Each `SKILL.md` is self-contained Markdown. Copy the relevant sections into whatever context file your AI tool reads (system prompt, project rules, etc.).
+See [`knowledge/README.md`](knowledge/README.md) for the full index and the skill→knowledge routing
+tables.
 
 ---
 
