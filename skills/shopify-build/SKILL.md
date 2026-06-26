@@ -7,8 +7,12 @@ description: Use when creating or modifying any Shopify theme code — sections,
 
 **Action:** create or edit Shopify theme code that follows every relevant rule.
 
-This skill is a router. It does not contain the rules — it loads them from the knowledge base
-(`knowledge/`, at the repo root, sibling of `skills/`) based on what you are building, then applies them.
+This skill is a router. It does not contain the rules — it loads them from the knowledge base based on
+what you are building, then applies them.
+
+**Where the knowledge lives:** `${CLAUDE_PLUGIN_ROOT}/knowledge/` when installed as a plugin, or
+`knowledge/` at the repo root when running from a clone. Every path below is relative to that
+`knowledge/` directory (e.g. `areas/sections.md` → `${CLAUDE_PLUGIN_ROOT}/knowledge/areas/sections.md`).
 
 ## When to invoke
 
@@ -20,12 +24,12 @@ This skill is a router. It does not contain the rules — it loads them from the
 
 ## How to use the knowledge base
 
-1. **Always** read `knowledge/universal.md` first — the cross-cutting rules that apply to every file.
+1. **Always** read `universal.md` first — the cross-cutting rules that apply to every file.
 2. Then read the files in the routing table below for the file type(s) you are touching.
 3. Write code that conforms. If a rule references another file (e.g. CSS scoping → `languages/css.md`),
    read that too when it's relevant.
 
-If you can't locate the repo root, Glob for `knowledge/universal.md` and resolve paths from there.
+If `${CLAUDE_PLUGIN_ROOT}` is unset, Glob for `knowledge/universal.md` and resolve paths from there.
 
 ## Routing table — what to load for what you touch
 

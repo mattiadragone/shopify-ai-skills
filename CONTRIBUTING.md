@@ -51,6 +51,17 @@ existing actions.
    procedure, and example prompts.
 3. Add it to the skills table in `README.md` and `CLAUDE.md`.
 
+## Releasing (plugin version)
+
+This repo is a Claude Code plugin. When you cut a release:
+
+1. Bump `version` in **both** `.claude-plugin/plugin.json` and the plugin entry in
+   `.claude-plugin/marketplace.json` (keep them in sync). Use semver — a structural/skill change that
+   breaks existing installs is a **major** bump.
+2. Publish a matching GitHub Release with the same `vX.Y.Z` tag.
+
+Users who installed via the marketplace pick up the new version with `/plugin marketplace update`.
+
 ## Reporting issues
 
 Open an issue for:

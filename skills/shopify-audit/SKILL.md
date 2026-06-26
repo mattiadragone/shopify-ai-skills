@@ -8,8 +8,10 @@ description: Use when inspecting an existing Shopify theme repo for problems —
 **Action:** inspect an existing theme repo and produce a findings report. **Read-only — never edit code
 here.** To fix what the audit finds, hand off to `shopify-build`.
 
-Findings draw their "why" from the knowledge base (`knowledge/`, at the repo root). Each reported issue
-should cite the knowledge file a developer can read to understand and fix it.
+Findings draw their "why" from the knowledge base — `${CLAUDE_PLUGIN_ROOT}/knowledge/` when installed as
+a plugin, or `knowledge/` at the repo root from a clone. Each reported issue should cite the knowledge
+file a developer can read to understand and fix it (paths below are written relative to the repo root for
+readability).
 
 ## When to invoke
 

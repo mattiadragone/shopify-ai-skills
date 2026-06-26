@@ -9,7 +9,8 @@ description: Use when setting up or running the Shopify theme dev toolchain — 
 CI, and build pipelines.
 
 For writing theme code, use `shopify-build`; to inspect a repo, use `shopify-audit`. This skill owns the
-commands and configuration around them.
+commands and configuration around them. Where this skill points at knowledge files, they live at
+`${CLAUDE_PLUGIN_ROOT}/knowledge/` (installed) or `knowledge/` at the repo root (clone).
 
 ## When to invoke
 

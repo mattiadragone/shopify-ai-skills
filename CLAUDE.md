@@ -1,6 +1,7 @@
 # Shopify Theme Skills
 
-AI skills for developing and auditing Shopify themes. The project separates **rules** from **actions**:
+A **Claude Code plugin** (`claude-shopify-themes`) for developing and auditing Shopify themes. The project
+separates **rules** from **actions**:
 
 - **`knowledge/`** — the rules. One file per Shopify area. Single source of truth. No actions.
 - **`skills/`** — the actions. Operation skills that read from `knowledge/` based on the task.
@@ -8,6 +9,10 @@ AI skills for developing and auditing Shopify themes. The project separates **ru
 ## Architecture
 
 ```
+.claude-plugin/             PLUGIN manifest + marketplace catalog
+├── plugin.json             name (= skill namespace), version, description
+└── marketplace.json        lets users add this repo as a marketplace
+
 knowledge/                  RULES — single source of truth
 ├── universal.md            cross-cutting rules (load for any task)
 ├── areas/                  sections, snippets, blocks, templates, layout, assets, config, locales
@@ -19,6 +24,9 @@ skills/                     ACTIONS — read from knowledge/
 ├── shopify-audit/          inspect an existing repo (read-only report)
 └── shopify-tooling/        CLI, theme-check, Prettier, version control, build pipelines
 ```
+
+Skills resolve knowledge files via `${CLAUDE_PLUGIN_ROOT}/knowledge/` when installed, or `knowledge/` at
+the repo root from a clone.
 
 ### The split
 

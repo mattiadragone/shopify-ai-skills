@@ -1,6 +1,7 @@
-# shopify-ai-skills
+# claude-shopify-themes
 
-AI coding-assistant skills for building and auditing Shopify themes, for **Claude Code**.
+A **Claude Code plugin** for building and auditing Shopify themes. Install it once and you get three
+action skills plus a full Shopify-theme knowledge base — no manual copying into `.claude/skills/`.
 
 The project separates two things that used to be tangled together:
 
@@ -16,7 +17,11 @@ Change a rule once in `knowledge/`, and every skill that uses it stays correct.
 ## Architecture
 
 ```
-shopify-ai-skills/
+claude-shopify-themes/
+│
+├── .claude-plugin/             ← PLUGIN manifest + marketplace catalog
+│   ├── plugin.json             name, version, description
+│   └── marketplace.json        lets users add this repo as a marketplace
 │
 ├── knowledge/                  ← RULES (single source of truth)
 │   ├── universal.md            cross-cutting rules — load for any task
@@ -29,6 +34,9 @@ shopify-ai-skills/
     ├── shopify-audit/          inspect an existing repo (read-only report)
     └── shopify-tooling/        CLI, theme-check, Prettier, version control, build pipelines
 ```
+
+The skills read knowledge via `${CLAUDE_PLUGIN_ROOT}/knowledge/` when installed as a plugin, falling
+back to `knowledge/` at the repo root when run from a clone.
 
 ### Why three skills
 
@@ -81,22 +89,32 @@ knowledge reference explaining each one.
 
 ---
 
-## Installation (Claude Code)
+## Installation (Claude Code plugin)
 
-Clone into your project's `.claude/skills/` directory:
+Add this repo as a marketplace, then install the plugin:
 
-```bash
-git clone https://github.com/mattiadragone/shopify-ai-skills .claude/skills/shopify
+```text
+/plugin marketplace add mattiadragone/claude-shopify-themes
+/plugin install claude-shopify-themes@mattiadragone
 ```
 
-Or as a submodule:
+The skills become available namespaced under the plugin — Claude invokes them automatically when a task
+matches, or you can call them explicitly:
 
-```bash
-git submodule add https://github.com/mattiadragone/shopify-ai-skills .claude/skills/shopify
+```text
+/claude-shopify-themes:shopify-build
+/claude-shopify-themes:shopify-audit
+/claude-shopify-themes:shopify-tooling
 ```
 
-The skills under `skills/` are auto-discovered on the next session start. Claude picks a skill by name
-when the task matches its `description`, then reads the `knowledge/` files it needs.
+Update later with `/plugin marketplace update mattiadragone`.
+
+### Try it locally without installing
+
+```bash
+git clone https://github.com/mattiadragone/claude-shopify-themes
+claude --plugin-dir ./claude-shopify-themes
+```
 
 ---
 
