@@ -1,11 +1,11 @@
 {
-  "name": "claude-shopify-themes",
+  "name": "storefront-theme-kit",
   "description": "Build and audit Shopify themes with Claude Code. Three action skills (build, audit, tooling) backed by a single-source-of-truth knowledge base covering sections, blocks, Liquid, CSS, performance, accessibility, and Theme Store rules.",
   "version": "2.0.0",
   "author": {
     "name": "Mattia Dragone"
   },
-  "homepage": "https://github.com/mattiadragone/claude-shopify-themes",
-  "repository": "https://github.com/mattiadragone/claude-shopify-themes",
+  "homepage": "https://github.com/mattiadragone/storefront-theme-kit",
+  "repository": "https://github.com/mattiadragone/storefront-theme-kit",
   "license": "MIT"
 }
